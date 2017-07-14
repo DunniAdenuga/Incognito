@@ -102,18 +102,24 @@ public class Vertex {
      }
      
      //Insert direct generalizations of node into queue, keeping queue ordered by height
-     public ArrayList<Vertex> getDirectGeneralizations(){
-         ArrayList<Vertex> generalizations = new ArrayList<>();
+     public ArrayList<Vertex> getDirectGeneralizations(ArrayList<Vertex> generalizations){
+         //ArrayList<Vertex> generalizations = new ArrayList<>();
          for(int i = 0; i < incidentEdges.size(); i++){
              //either of this should work
+             Vertex v = incidentEdges.get(i).getTo();
+             if(generalizations.contains(v) == false){
              //generalizations.add(incidentEdges.get(i).getAdjacentVertex(this));
              generalizations.add(incidentEdges.get(i).getTo());
+             }
          }
          
          return generalizations;
      }
      
-     
+    @Override
+     public String toString(){
+         return this.getData();
+     }
      /*public boolean equal(Vertex vertex){
         boolean result = true; 
         if(incidentEdges.size() != vertex.incidentEdges.size()){

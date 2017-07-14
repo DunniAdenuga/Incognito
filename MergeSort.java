@@ -16,7 +16,12 @@ public class MergeSort {
     static ArrayList<Vertex> tempVertexes = new ArrayList<>();
     
     public static ArrayList<Vertex> sort(ArrayList<Vertex> vS){
+        if(vS.isEmpty()){
+            return vS;
+        }
+        //System.out.println( "list size: "+vS.size());
         vertexes = vS;
+        System.out.println( "list size: "+vertexes.size());
         mergesort(0, vertexes.size()-1);
         return vertexes;
     }
@@ -35,7 +40,7 @@ public class MergeSort {
     public static void merge(int low, int middle, int high){
         
         for(int i = 0; i < vertexes.size(); i++){
-            tempVertexes.set(i, vertexes.get(i).copy());
+            tempVertexes.add(i, vertexes.get(i).copy());
         }
         
         int i = low;

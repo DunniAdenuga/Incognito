@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Properties;
 import java.util.Scanner;
@@ -34,9 +35,9 @@ import java.util.Scanner;
         Class.forName("org.postgresql.Driver");
         String url = "jdbc:postgresql://audgendb.c9az8e0qjbgo.us-east-1.rds.amazonaws.com:5432/data";
         Properties props = new Properties();
-        props.setProperty("user", "adenugad");
-        props.setProperty("password", "Stanbic@349");
-        incognito.dataFly.setConn(DriverManager.getConnection(url, props));
+        props.setProperty("user", "****");//UPDATE
+        props.setProperty("password", "****");//UPDATE
+        //incognito.dataFly.setConn(DriverManager.getConnection(url, props)); uncomment when connecting to DB
         incognito.table = incognito.dataFly.setup();
         
         //ask user for k
@@ -46,6 +47,7 @@ import java.util.Scanner;
         
         incognito.getQuasiCombinations(incognito.table, 1);//should go till n
         incognito.createGraphsForRattributes();
+        //System.out.println(Arrays.toString(incognito.quasiCombinationList.toArray()));
         ArrayList<Vertex> queue ;
         for(int i = 1; i <= incognito.table.getQuasiIden().getData().size(); i++){
             
@@ -55,19 +57,27 @@ import java.util.Scanner;
         //there should be a while here too, for all graphs formed in rAttribute
         //Graph tempGraph = incognito.rAttributeGen.get(incognito.quasiCombinationList.get(i-1));
         Graph tempGraph = incognito.rAttributeGen.get(incognito.quasiCombinationList.get(x));
+        //System.out.println("size " + incognito.rAttributeGen.size());
+        tempGraph.printOut();
         queue = incognito.sortByHeight(tempGraph.getRoots());
-        
+        //System.out.println(Arrays.toString(queue.toArray()));
         while(queue.isEmpty() == false){
-            Vertex node = queue.get(0);
+            Vertex node = queue.remove(0);
+            //System.out.println(node.getData());
             boolean issaKnon ;//= false; //checks if it's k-Anonymous
             if(node.isMarked() == false){
                 issaKnon = incognito.generalizeWithLevel(node.getData(), kAnon);
+                System.out.println(issaKnon);
                 if(issaKnon == true){
                     incognito.markAllDirectGeneralizations(node);
                 }
                 else{
                     tempGraph.removeVertex(node);
-                    queue = node.getDirectGeneralizations();
+                    System.out.println("node: " + node.getData());
+                    queue = node.getDirectGeneralizations(queue);
+                    System.out.println("Direct-Generalizations:\n" + Arrays.toString(queue.toArray()));
+                    queue = incognito.sortByHeight(queue);//i should be adding to the queue not replacing values
+                    
                 }
             }
           }
@@ -77,7 +87,7 @@ import java.util.Scanner;
         incognito.getQuasiCombinations(incognito.table, i + 1);
         incognito.createGraphsForRattributes();
         }
-       
+       System.out.println(Arrays.toString(incognito.listOfkAnon.toArray()));
      }
         
         public void getQuasiCombinations(PrivateTable table) throws FileNotFoundException{
@@ -210,8 +220,9 @@ import java.util.Scanner;
         }
         
         public void createGraphsForRattributes(){
+            rAttributeGen = new LinkedHashMap<>();
             for(int j = 0; j < quasiCombinationList.size(); j++){
-            System.out.println(quasiCombinationList.get(j));
+            //System.out.println(quasiCombinationList.get(j));
         
        
         Vertex topRoot = new Vertex(quasiCombinationList.get(j));
@@ -229,43 +240,52 @@ import java.util.Scanner;
         }
         origLength = newLength;
         }
-        rAttributeGen = new LinkedHashMap<>();
+        
         rAttributeGen.put(quasiCombinationList.get(j), mainGraph.copy());
-        rAttributeGen.get(quasiCombinationList.get(j)).printOut();
+        //rAttributeGen.get(quasiCombinationList.get(j)).printOut();
             }
         }
        
          public ArrayList<Vertex> sortByHeight(ArrayList<Vertex> queue){
         return MergeSort.sort(queue);
-    }
+        }
          /**
           * Generalizes original table by quasi ID and level of quasiS
           * then gets freq set of generated table
           * @param s
           * @param kAnon
           * @return true if generated table is kAnon
+          * @throws java.io.FileNotFoundException
           */
          public boolean generalizeWithLevel(String s, int kAnon) throws FileNotFoundException{
              PrivateTable newTable = table.copy();
+             //System.out.println("s " + s);
              ArrayList<DGHTree> dghTrees = dataFly.createDGHTrees(newTable);
+             //System.out.println("dghT " + dghTrees.size());
              String[] arr = s.split(":");
              int index = -1;//of correct dghTree
+             //System.out.println("arr " + Arrays.toString(arr));
              for(int i = 0; i < arr.length; i++){
                 for(int j = 0; j < dghTrees.size(); j++){
-                    if(dghTrees.get(j).getLabel().equalsIgnoreCase(
+                    if(dghTrees.get(j).getLabel().equals(
                             arr[i].substring(0, arr[i].indexOf(" ")))){
+                        //System.out.println("here! ");
                         index = j;
                     }
+                }    
                     //generalize using this tree dghTree j at level rest of arr[i]
                 int x = 0;
                 int generalizationLevel = Integer.parseInt(arr[i].substring(arr[i].indexOf(" ")+ 1));
+                //System.out.println("genL " + generalizationLevel);
                 while(x < generalizationLevel){
+                //System.out.println("index- " + index);
                 newTable = dataFly.generateTableWithDGHTable(newTable, dghTrees.get(index), index);
                 x++;
                 }
+            
             }
-            }
-            //maybe later, i will have it return the new table 
+            //maybe later, i will have it return the new table
+            newTable.printFormat();
          return dataFly.checkTable(kAnon, newTable);
          }
          
