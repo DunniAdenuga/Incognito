@@ -8,15 +8,20 @@ import java.util.ArrayList;
  * @author adenugad
  */
 public class Graph {
-    ArrayList<Vertex> vertices = new ArrayList<>();
-    ArrayList<Edge> edges = new ArrayList<>();
+
+    private final ArrayList<Vertex> vertices = new ArrayList<>();
+    private final ArrayList<Edge> edges = new ArrayList<>();
     
     public Graph(){
         
     }
     
-    public Graph(ArrayList<Vertex> vertices, ArrayList<Edge> edges){
-        
+     public ArrayList<Vertex> getVertices() {
+        return vertices;
+    }
+
+    public ArrayList<Edge> getEdges() {
+        return edges;
     }
     
     public Graph copy(){
@@ -38,11 +43,12 @@ public class Graph {
     public int numVertices(){
         return vertices.size();
     }
+    
     public void addEdge(Vertex x, Vertex y){
         Edge edge = new Edge(x, y);
         edges.add(edge);
         x.addIncidentEdges(edge);
-        y.addIncidentEdges(edge);
+        //y.addIncidentEdges(edge);
     }
     
     public void addEdge(Edge edge){
@@ -63,9 +69,8 @@ public class Graph {
         if(edges.contains(e)){
             edges.remove(e);
         }
-        e.from.incidentEdges.remove(e);
-        e.to.incidentEdges.remove(e);
-        
+        e.from.getIncidentEdges().remove(e);
+        //e.to.getIncidentEdges().remove(e);   
     }
     
     public void removeVertex(Vertex v){
@@ -74,10 +79,6 @@ public class Graph {
             removeEdge(v.getIncidentEdges().get(i));
         }
     }
-    
-    /*public Graph generateGraphOfGeneralizations(ArrayList<Vertex> vertices, ArrayList<Edge> edges){
-        
-    }*/
     
     public Vertex getVertex(int index){
         return vertices.get(index);
@@ -94,6 +95,11 @@ public class Graph {
         }
     }
     
+    /**
+     * Does graph have vertex ?
+     * @param v - vertex
+     * @return vertex if it's in graph
+     */
     public Vertex hasVertex(Vertex v){
         for(int i = 0; i < vertices.size(); i++){
             if(vertices.get(i).equals(v)){
@@ -103,6 +109,11 @@ public class Graph {
         return v;
     }
     
+    /**
+     * Does graph have vertex ?
+     * @param v - vertex
+     * @return 
+     */
     public boolean hasVertex2(Vertex v){
         for(int i = 0; i < vertices.size(); i++){
             if(vertices.get(i).equals(v)){
@@ -112,7 +123,10 @@ public class Graph {
         return false;
     }
     
-    //all nodes(vertices)  with no edge directed to them
+    /**
+     * all nodes(vertices) in graph with no edge directed to them
+     * @return list of these vertices
+     */
     public ArrayList<Vertex> getRoots(){
         ArrayList<Vertex> queue = new ArrayList<>();
         for(int j = 0; j < vertices.size(); j++){

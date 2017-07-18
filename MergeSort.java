@@ -12,8 +12,8 @@ import java.util.ArrayList;
  * @author adenugad
  */
 public class MergeSort {
-    static ArrayList<Vertex>   vertexes  = new ArrayList<>();
-    static ArrayList<Vertex> tempVertexes = new ArrayList<>();
+    private static ArrayList<Vertex>   vertexes  = new ArrayList<>();
+    private static ArrayList<Vertex> tempVertexes = new ArrayList<>();
     
     public static ArrayList<Vertex> sort(ArrayList<Vertex> vS){
         if(vS.isEmpty()){
@@ -21,7 +21,7 @@ public class MergeSort {
         }
         //System.out.println( "list size: "+vS.size());
         vertexes = vS;
-        System.out.println( "list size: "+vertexes.size());
+        //System.out.println( "list size: "+vertexes.size());
         mergesort(0, vertexes.size()-1);
         return vertexes;
     }

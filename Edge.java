@@ -3,9 +3,10 @@ package Incognito;
 
 /**
  *
- * @author adenugad
+ * @author Dunni
  */
-public class Edge {//undirected, weightless
+public class Edge {
+    //kinda directed, weightless
     Vertex to;
     Vertex from;
     
@@ -17,8 +18,6 @@ public class Edge {//undirected, weightless
     public Edge(Vertex from, Vertex to){//doesn't check for  self loop
         this.from = from;
         this.to = to;
-        //from.addIncidentEdges(this);
-        //to.addIncidentEdges(this);
     }
     
     public Vertex getAdjacentVertex(Vertex current){
@@ -29,7 +28,12 @@ public class Edge {//undirected, weightless
     return null;            
     }
     
-    public boolean equal(Edge e){
+    @Override
+    public boolean equals(Object edge){
+        if(edge.getClass() != this.getClass()){
+            return false;
+        }
+        Edge e = (Edge) edge;
         return to.equals(e.to) && from.equals(e.from);
     }
     

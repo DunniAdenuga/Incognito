@@ -5,22 +5,16 @@ import java.util.ArrayList;
 
 /**
  *
- * @author adenugad
+ * @author Dunni
  */
 public class Vertex {
-    //PrivateTable data;
-    String data; // This represents QI + " " + level
-                // it should hold more attributes as it
-    ArrayList<Edge> incidentEdges = new ArrayList<>();
-    int generationLevel;// if i generalize a vertex to get you, i add one to that 
-                        //vertex's generation Level to get yours   
-    String label; // unique to every vertex
-    ArrayList <Vertex> directGen = new ArrayList<>();
+    private final String data; // This represents QI + " " + level, it should hold more attributes as it
+    private ArrayList<Edge> incidentEdges = new ArrayList<>(); 
     /**
      * Specifies if the table associated with this vertex has been ascertained
      * to be k-anonymous
      */
-    boolean marked = false;
+    private boolean marked = false;
     
     public Vertex(String data2){
         data = data2;
@@ -50,20 +44,12 @@ public class Vertex {
          return incidentEdges;
      }
      
-     public void setGenerationLevel(int i){
-         generationLevel = i;
-     }
-     
      public boolean isMarked(){
          return marked;
      }
      
      public void setMark(boolean val){
          marked = val;
-     }
-     
-     public void setLabel(String label){
-         this.label = label;
      }
      
      /**
@@ -85,7 +71,6 @@ public class Vertex {
      
      public Vertex copy(){
          Vertex vertex = new Vertex(data);
-         vertex.generationLevel = generationLevel;
          for(int i = 0; i < incidentEdges.size(); i++){
              vertex.incidentEdges.add(new Edge (vertex, incidentEdges.get(i).getTo()));
          }
@@ -96,6 +81,10 @@ public class Vertex {
          return edge.getAdjacentVertex(this);
      }
      
+     /**
+      * Addition of heights of every attribute represented in this vertex
+      * @return integer value
+      */
      public int getVertexHeight(){
          String[] arr = data.split(":");
          int height = 0;
@@ -105,36 +94,19 @@ public class Vertex {
          return height;
      }
      
-     //Insert direct generalizations of node into queue, keeping queue ordered by height
+     /**
+      * Insert direct generalizations of node into queue, keeping queue ordered by height
+      * @param generalizations - queue
+      * @return list of vertices that this vertex directs towards
+      */
      public ArrayList<Vertex> getDirectGeneralizations(ArrayList<Vertex> generalizations){
-         //ArrayList<Vertex> generalizations = new ArrayList<>();
-         System.out.println("Nodeee - " + this.getData());
-         System.out.println("Direct Gen size: " + incidentEdges.size());
          for(int i = 0; i < incidentEdges.size(); i++){
              Vertex v = incidentEdges.get(i).getTo();
-             System.out.print(" Direct Gen " + i +  " - " + v.getData() );
-             //either of this should work
-             
-             if(generalizations.contains(v) == false){
-             //generalizations.add(incidentEdges.get(i).getAdjacentVertex(this));
-             generalizations.add(incidentEdges.get(i).getTo());
-             }
-             //Terrible way to do it but hope it works-contains doesn't fit here so i'll check every vertex in generalizations
-             
-             
+                    if(generalizations.contains(v) == false)
+                    {
+                    generalizations.add(incidentEdges.get(i).getTo());
+                    } 
          }
-         /*System.out.println("here");
-         //Seems to be adding to queue only when it's empty
-          System.out.println("Nodeee: " + this.getData());
-          System.out.println("Direct Gen size: " + directGen.size());
-         for(int i = 0; i < directGen.size(); i++){
-             System.out.print(" Direct Gen " + i +  ": " + directGen.get(i).getData() );
-             if(generalizations.contains(directGen.get(i)) == false){
-             //generalizations.add(incidentEdges.get(i).getAdjacentVertex(this));
-             generalizations.add(directGen.get(i));
-             }
-         }*/
-         System.out.println();
          return generalizations;
      }
      
@@ -142,33 +114,5 @@ public class Vertex {
      public String toString(){
          return this.getData().trim();
      }
-     
-     public void addDirectGeneralizations(Vertex v){
-         directGen.add(v);
-     }
-     
-     public ArrayList<Vertex>  getDirectGeneralizations(){
-         return directGen;
-     }
-     
-     public int getNumOfDirectGen(){
-         return directGen.size();
-     }
-     /*public boolean equal(Vertex vertex){
-        boolean result = true; 
-        if(incidentEdges.size() != vertex.incidentEdges.size()){
-            
-        }
-        if(data.getTableRows().size() == vertex.data.getTableRows().size()){ 
-        for(int i = 0; i < data.getTableRows().size(); i++){
-                result = data.getTableRows().get(i).
-                        checkEquality(vertex.getTable().getTableRows().get(i));
-                if(result == false){
-                    return result;
-                }        
-            }
-        
-    return result;    
-     }*/
 }
 
