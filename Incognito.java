@@ -35,9 +35,9 @@ import java.util.Scanner;
         Class.forName("org.postgresql.Driver");
         String url = "jdbc:postgresql://audgendb.c9az8e0qjbgo.us-east-1.rds.amazonaws.com:5432/data";
         Properties props = new Properties();
-        props.setProperty("user", "adenugad");//UPDATE
-        props.setProperty("password", "Stanbic@349");//UPDATE
-        incognito.dataFly.setConn(DriverManager.getConnection(url, props)); //uncomment when connecting to DB
+        props.setProperty("user", "*****");//UPDATE
+        props.setProperty("password", "*****");//UPDATE
+        //incognito.dataFly.setConn(DriverManager.getConnection(url, props)); //uncomment when connecting to DB
         incognito.table = incognito.dataFly.setup();
         
         //ask user for k
