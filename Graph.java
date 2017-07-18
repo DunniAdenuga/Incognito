@@ -22,10 +22,10 @@ public class Graph {
     public Graph copy(){
         Graph graph = new Graph();
         for(int i = 0; i < vertices.size(); i++ ){
-            graph.vertices.add(vertices.get(i).copy());
+            graph.vertices.add(vertices.get(i));
         }
         for(int i = 0; i < edges.size(); i++ ){
-            graph.edges.add(edges.get(i).copy());
+            graph.edges.add(edges.get(i));
         }
         
         return graph;
@@ -96,7 +96,7 @@ public class Graph {
     
     public Vertex hasVertex(Vertex v){
         for(int i = 0; i < vertices.size(); i++){
-            if(vertices.get(i).equal(v)){
+            if(vertices.get(i).equals(v)){
                 return vertices.get(i);
             }
         }
@@ -105,7 +105,7 @@ public class Graph {
     
     public boolean hasVertex2(Vertex v){
         for(int i = 0; i < vertices.size(); i++){
-            if(vertices.get(i).equal(v)){
+            if(vertices.get(i).equals(v)){
                 return true;
             }
         }
@@ -118,7 +118,7 @@ public class Graph {
         for(int j = 0; j < vertices.size(); j++){
             boolean issaRoot = false;
             for(int i = 0; i < edges.size(); i++){
-                if(vertices.get(j).equal(edges.get(i).to)){
+                if(vertices.get(j).equals(edges.get(i).to)){
                     issaRoot = true;
                 }
             }

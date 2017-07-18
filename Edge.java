@@ -22,15 +22,15 @@ public class Edge {//undirected, weightless
     }
     
     public Vertex getAdjacentVertex(Vertex current){
-        if(to.equal(current))
+        if(to.equals(current))
             return from;
-        if(from.equal(current))
+        if(from.equals(current))
             return to;
     return null;            
     }
     
     public boolean equal(Edge e){
-        return to.equal(e.to) && from.equal(e.from);
+        return to.equals(e.to) && from.equals(e.from);
     }
     
     public Edge copy(){
@@ -43,5 +43,10 @@ public class Edge {//undirected, weightless
     
     public Vertex getFrom(){
         return from;
+    }
+    
+    @Override
+    public String toString(){
+        return from.toString() + " -> " + to.toString();
     }
 }

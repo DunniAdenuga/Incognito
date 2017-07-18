@@ -15,6 +15,7 @@ public class Vertex {
     int generationLevel;// if i generalize a vertex to get you, i add one to that 
                         //vertex's generation Level to get yours   
     String label; // unique to every vertex
+    ArrayList <Vertex> directGen = new ArrayList<>();
     /**
      * Specifies if the table associated with this vertex has been ascertained
      * to be k-anonymous
@@ -73,8 +74,11 @@ public class Vertex {
         return incidentEdges.isEmpty();
      }
      
-     public boolean equal(Vertex vertex){
-         return data.hashCode() == vertex.data.hashCode();
+     
+    @Override
+     public boolean equals(Object vertex){
+         Vertex v = (Vertex) vertex;
+         return data.hashCode() == v.data.hashCode();
          //not only this though
          //incident edges should be the same
      }
@@ -83,7 +87,7 @@ public class Vertex {
          Vertex vertex = new Vertex(data);
          vertex.generationLevel = generationLevel;
          for(int i = 0; i < incidentEdges.size(); i++){
-             vertex.incidentEdges.add(incidentEdges.get(i));
+             vertex.incidentEdges.add(new Edge (vertex, incidentEdges.get(i).getTo()));
          }
          return vertex;
      }
@@ -104,21 +108,51 @@ public class Vertex {
      //Insert direct generalizations of node into queue, keeping queue ordered by height
      public ArrayList<Vertex> getDirectGeneralizations(ArrayList<Vertex> generalizations){
          //ArrayList<Vertex> generalizations = new ArrayList<>();
+         System.out.println("Nodeee - " + this.getData());
+         System.out.println("Direct Gen size: " + incidentEdges.size());
          for(int i = 0; i < incidentEdges.size(); i++){
-             //either of this should work
              Vertex v = incidentEdges.get(i).getTo();
+             System.out.print(" Direct Gen " + i +  " - " + v.getData() );
+             //either of this should work
+             
              if(generalizations.contains(v) == false){
              //generalizations.add(incidentEdges.get(i).getAdjacentVertex(this));
              generalizations.add(incidentEdges.get(i).getTo());
              }
+             //Terrible way to do it but hope it works-contains doesn't fit here so i'll check every vertex in generalizations
+             
+             
          }
-         
+         /*System.out.println("here");
+         //Seems to be adding to queue only when it's empty
+          System.out.println("Nodeee: " + this.getData());
+          System.out.println("Direct Gen size: " + directGen.size());
+         for(int i = 0; i < directGen.size(); i++){
+             System.out.print(" Direct Gen " + i +  ": " + directGen.get(i).getData() );
+             if(generalizations.contains(directGen.get(i)) == false){
+             //generalizations.add(incidentEdges.get(i).getAdjacentVertex(this));
+             generalizations.add(directGen.get(i));
+             }
+         }*/
+         System.out.println();
          return generalizations;
      }
      
     @Override
      public String toString(){
-         return this.getData();
+         return this.getData().trim();
+     }
+     
+     public void addDirectGeneralizations(Vertex v){
+         directGen.add(v);
+     }
+     
+     public ArrayList<Vertex>  getDirectGeneralizations(){
+         return directGen;
+     }
+     
+     public int getNumOfDirectGen(){
+         return directGen.size();
      }
      /*public boolean equal(Vertex vertex){
         boolean result = true; 

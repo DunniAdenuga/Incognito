@@ -35,9 +35,9 @@ import java.util.Scanner;
         Class.forName("org.postgresql.Driver");
         String url = "jdbc:postgresql://audgendb.c9az8e0qjbgo.us-east-1.rds.amazonaws.com:5432/data";
         Properties props = new Properties();
-        props.setProperty("user", "****");//UPDATE
-        props.setProperty("password", "****");//UPDATE
-        //incognito.dataFly.setConn(DriverManager.getConnection(url, props)); uncomment when connecting to DB
+        props.setProperty("user", "adenugad");//UPDATE
+        props.setProperty("password", "Stanbic@349");//UPDATE
+        incognito.dataFly.setConn(DriverManager.getConnection(url, props)); //uncomment when connecting to DB
         incognito.table = incognito.dataFly.setup();
         
         //ask user for k
@@ -45,10 +45,11 @@ import java.util.Scanner;
         Scanner keyboard = new Scanner(System.in);
         int kAnon = keyboard.nextInt();
         
-        incognito.getQuasiCombinations(incognito.table, 1);//should go till n
+        incognito.getQuasiCombinations(incognito.table, 1);//should go till n // change to 1
         incognito.createGraphsForRattributes();
         //System.out.println(Arrays.toString(incognito.quasiCombinationList.toArray()));
         ArrayList<Vertex> queue ;
+        //for(int i = 1; i <= 2; i++){
         for(int i = 1; i <= incognito.table.getQuasiIden().getData().size(); i++){
             
         /*incognito.getQuasiCombinations(incognito.table, i + 1);
@@ -56,7 +57,7 @@ import java.util.Scanner;
         for(int x = 0; x < incognito.quasiCombinationList.size(); x++){
         //there should be a while here too, for all graphs formed in rAttribute
         //Graph tempGraph = incognito.rAttributeGen.get(incognito.quasiCombinationList.get(i-1));
-        Graph tempGraph = incognito.rAttributeGen.get(incognito.quasiCombinationList.get(x));
+        Graph tempGraph = incognito.rAttributeGen.get(incognito.quasiCombinationList.get(x));//change to get x
         //System.out.println("size " + incognito.rAttributeGen.size());
         tempGraph.printOut();
         queue = incognito.sortByHeight(tempGraph.getRoots());
@@ -67,27 +68,34 @@ import java.util.Scanner;
             boolean issaKnon ;//= false; //checks if it's k-Anonymous
             if(node.isMarked() == false){
                 issaKnon = incognito.generalizeWithLevel(node.getData(), kAnon);
-                System.out.println(issaKnon);
+                System.out.println("Am I k-Anon ? " + issaKnon);
                 if(issaKnon == true){
+                    System.out.println("node: " + node.getData());
+                    System.out.println("Direct-Generalizations:\n" + Arrays.toString(node.getIncidentEdges().toArray()));
                     incognito.markAllDirectGeneralizations(node);
                 }
                 else{
-                    tempGraph.removeVertex(node);
+                    
                     System.out.println("node: " + node.getData());
-                    queue = node.getDirectGeneralizations(queue);
+                    queue = node.getDirectGeneralizations(queue);// add generalizations of current node to queue
                     System.out.println("Direct-Generalizations:\n" + Arrays.toString(queue.toArray()));
                     queue = incognito.sortByHeight(queue);//i should be adding to the queue not replacing values
-                    
+                    System.out.println("Direct-Generalizations (Arranged):\n" + Arrays.toString(queue.toArray()));
+                    //tempGraph.removeVertex(node); i don't know 
                 }
             }
+            
           }
         // from each graph add to listOfKAnon Strings that are kAnon 
-        incognito.addListOfGeneralizations(tempGraph);
+            //incognito.addListOfGeneralizations(tempGraph);
        }
         incognito.getQuasiCombinations(incognito.table, i + 1);
         incognito.createGraphsForRattributes();
         }
-       System.out.println(Arrays.toString(incognito.listOfkAnon.toArray()));
+       System.out.println("Combinations that are k-Anon:" );//+ Arrays.toString(incognito.listOfkAnon.toArray()));
+       for(int m = 0; m < incognito.listOfkAnon.size(); m++){
+           System.out.println(incognito.listOfkAnon.get(m));
+       }
      }
         
         public void getQuasiCombinations(PrivateTable table) throws FileNotFoundException{
@@ -173,7 +181,7 @@ import java.util.Scanner;
             quasiID = quasiIDTopHeights.keySet().toArray(quasiID);
             //System.out.print("quasiID - ");  System.out.println(Arrays.toString(quasiID));
             
-            for(int i = 0; i < quasiID.length; i++){
+            for(int i = 0; i < quasiID.length; i++){//what I'm going for here ? I get it
                 int oldValue = quasiIDTopHeights.get(quasiID[i]);
                 int newValue = quasiIDTopHeights.get(quasiID[i]) - 1;
                 if(newValue >= 0){
@@ -192,7 +200,8 @@ import java.util.Scanner;
                 Edge edge = new Edge(vertex2, v);
                 //v.addIncidentEdges(edge);
                 //System.out.println(v.getData());
-                vertex2.addIncidentEdges(edge);
+                vertex2.addIncidentEdges(edge);// adding direct generalization
+                vertex2.addDirectGeneralizations(v);//this isn't working
                 //System.out.println("here - " + vertex2.getData());
                 mainGraph.addEdge(edge);
                 //mainGraph.addVertex(v);
@@ -289,12 +298,19 @@ import java.util.Scanner;
          return dataFly.checkTable(kAnon, newTable);
          }
          
-         public void markAllDirectGeneralizations(Vertex v){
+        /* public void markAllDirectGeneralizations(Vertex v){
              v.setMark(true);
+         for(int i =0; i < v.getNumOfDirectGen(); i++){
+             markAllDirectGeneralizations(v.getDirectGeneralizations().get(i));
+         }  
+        }*/
+         
+         public void markAllDirectGeneralizations(Vertex v){
+             addListOfGeneralizations(v);
          for(int i =0; i < v.getNumOfIncidentEdges(); i++){
              markAllDirectGeneralizations(v.getIncidentEdges().get(i).getTo());
          }  
-        }
+        } 
          
          public void addListOfGeneralizations(Graph graph){
              for(int i = 0; i < graph.vertices.size(); i++){
@@ -302,6 +318,13 @@ import java.util.Scanner;
                      listOfkAnon.add(graph.vertices.get(i).getData());
                  }
              }
+         }
+         
+          public void addListOfGeneralizations(Vertex node){
+            node.setMark(true);
+            if(listOfkAnon.contains(node.getData()) == false){
+                listOfkAnon.add(node.getData());
+            }  
          }
          
     
